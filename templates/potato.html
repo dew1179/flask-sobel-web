@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>土豆生长记录网站</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>土豆生长全过程记录网站</h1>
+        <p>土豆种植观察 · 生长图像与数据可视化平台</p>
+    </header>
+    <nav>
+        <a href="#home">首页</a>
+        <a href="#timeline">生长时间线</a>
+        <a href="#album">图片相册</a>
+        <a href="#data">生长数据</a>
+        <a href="#upload">新增记录</a>
+        <a href="#about">项目介绍</a>
+    </nav>
+    <div class="container">
+        <!-- 首页板块 -->
+        <section id="home">
+            <h2>项目简介</h2>
+            <p>本项目完整记录土豆从切块催芽、播种、日常养护到成熟收获的完整周期。定期拍摄照片视频，采集温度、株高等生长数据，搭建网页展示土豆生长全过程，普及土豆种植科普知识。</p>
+            <p>项目阶段：项目启动 → 土豆种植素材采集 → 网站开发部署 → 项目交付验收</p>
+        </section>
+
+        <!-- 时间线板块 -->
+        <section id="timeline">
+            <h2>土豆生长时间线</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>阶段1：切块催芽</h3>
+                    <p>土豆切块，放置避光环境催芽，等待芽点萌发。</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>阶段2：装土播种</h3>
+                    <p>花盆装入营养土，将发芽土豆块埋入土壤。</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>阶段3：苗期养护</h3>
+                    <p>定期浇水、控制光照，记录幼苗出土，观察长势。</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>阶段4：植株生长期</h3>
+                    <p>持续采集株高、环境温度，拍摄植株照片视频。</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>阶段5：成熟收获</h3>
+                    <p>茎叶枯黄，挖取土豆，整理全部素材。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 相册板块：自动读取上传图片 -->
+        <section id="album">
+            <h2>生长相册</h2>
+            <div class="album-grid">
+                {% for item in records %}
+                    {% if item.img_name %}
+                    <div class="album-card">
+                        <div class="img-box">
+                            <img src="{{ url_for('static', filename='uploads/'+item.img_name) }}" style="width:100%;height:100%;object-fit:cover;">
+                        </div>
+                        <p>{{item.record_date}} | {{item.remark}}</p>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- 生长数据表格（后端读取数据库自动渲染） -->
+        <section id="data">
+            <h2>生长数据记录</h2>
+            <table>
+                <tr>
+                    <th>日期</th>
+                    <th>环境温度℃</th>
+                    <th>土豆株高(cm)</th>
+                    <th>生长状态备注</th>
+                </tr>
+                {% for item in records %}
+                <tr>
+                    <td>{{item.record_date}}</td>
+                    <td>{{item.temperature}}</td>
+                    <td>{{item.height}}</td>
+                    <td>{{item.remark}}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
+
+        <!-- 新增：上传表单（录入数据+上传照片） -->
+        <section id="upload">
+            <h2>新增土豆生长记录</h2>
+            <form action="/add" method="post" enctype="multipart/form-data">
+                <div style="margin:10px 0;">
+                    <label>记录日期：</label>
+                    <input type="text" name="record_date" required placeholder="例如：第7天">
+                </div>
+                <div style="margin:10px 0;">
+                    <label>环境温度(℃)：</label>
+                    <input type="number" step="0.1" name="temperature" required>
+                </div>
+                <div style="margin:10px 0;">
+                    <label>土豆株高(cm)：</label>
+                    <input type="number" step="0.1" name="height" required>
+                </div>
+                <div style="margin:10px 0;">
+                    <label>状态备注：</label>
+                    <input type="text" name="remark" placeholder="描述土豆生长情况">
+                </div>
+                <div style="margin:10px 0;">
+                    <label>上传照片：</label>
+                    <input type="file" name="img" accept="image/*">
+                </div>
+                <button type="submit" style="padding:8px 16px;background:#507c40;color:white;border:none;border-radius:4px;">提交记录</button>
+            </form>
+        </section>
+
+        <!-- 项目介绍 -->
+        <section id="about">
+            <h2>项目介绍</h2>
+            <p>项目团队分工：前端页面开发、后端数据库搭建、土豆种植实验、素材拍摄整理。</p>
+            <p>功能：浏览生长时间线、查看实拍相册、查看生长测量数据、阅读土豆种植科普，支持上传照片与新增生长数据。</p>
+        </section>
+    </div>
+    <footer>
+        土豆生长记录网站 | 大创项目
+    </footer>
+</body>
+</html>
